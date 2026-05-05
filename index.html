@@ -73,7 +73,7 @@
             padding: 0 20px;
         }
 
-        /* Widgets/Specchietti */
+        /* Widgets */
         .widgets {
             display: flex;
             gap: 20px;
@@ -140,10 +140,6 @@
             background-color: #f9a8d4;
         }
 
-        .calendar-header h2 {
-            margin: 0;
-        }
-
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -196,7 +192,6 @@
             font-weight: bold;
         }
 
-        /* Legend */
         .legend {
             margin-top: 20px;
             display: flex;
@@ -221,11 +216,9 @@
 </head>
 <body>
 
-    <!-- Navigazione e Info Utente -->
     <nav>
         <div class="profile-container">
             <div class="profile-pic">
-                <!-- Sostituisci il link src con il percorso della vera foto tessera di Luigia -->
                 <img src="luigia-m.jpg" alt="Foto Luigia Mattei">
             </div>
             <h1>OSS LUIGIA MATTEI</h1>
@@ -233,18 +226,13 @@
     </nav>
 
     <div class="container">
-        
-        <!-- Specchietti Contatori -->
         <div class="widgets">
-            <!-- Specchietto Ferie Totali -->
             <div class="card">
                 <h2>Ferie Disponibili</h2>
-                <!-- Questo numero si aggiornerà in base ai calcoli JS -->
-                <div class="number" id="ferie-disponibili">24</div>
-                <div class="subtitle">Base di 24. Si incrementa di 2 ogni 5 del mese.<br>Vengono sottratte quelle "Approvate".</div>
+                <div class="number" id="ferie-disponibili">10</div>
+               
             </div>
 
-            <!-- Specchietto Ferie Estive (Fisse) -->
             <div class="card" style="border-top-color: #8b5cf6;">
                 <h2 style="color: #5b21b6;">Ferie Estive</h2>
                 <div class="number" style="color: #8b5cf6;">14</div>
@@ -252,57 +240,45 @@
             </div>
         </div>
 
-        <!-- Calendario Interattivo -->
         <div class="calendar-section">
             <div class="calendar-header">
                 <button onclick="changeMonth(-1)">&#8592; Mese Prec</button>
-                <h2 id="month-year-display">Maggio 2026</h2>
+                <h2 id="month-year-display"></h2>
                 <button onclick="changeMonth(1)">Mese Succ &#8594;</button>
             </div>
 
-            <div class="calendar-grid" id="calendar">
-                <!-- I giorni vengono generati tramite JavaScript -->
-            </div>
+            <div class="calendar-grid" id="calendar"></div>
 
             <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #fdf8fa;"></div> Libero
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: var(--requested); border-color: #eab308;"></div> Richiesto
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: var(--approved); border-color: #22c55e;"></div> Approvato (Scalato)
-                </div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #fdf8fa;"></div> Libero</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: var(--requested); border-color: #eab308;"></div> Richiesto</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: var(--approved); border-color: #22c55e;"></div> Approvato</div>
             </div>
         </div>
-
     </div>
 
     <script>
-        // -- 1. GESTIONE DEI DATI E INCREMENTO AUTOMATICO --
         let now = new Date();
         let currentMonth = now.getMonth();
         let currentYear = now.getFullYear();
         let displayMonth = currentMonth;
         let displayYear = currentYear;
 
-        // Recuperiamo i dati dalla memoria del browser, altrimenti li creiamo per la prima volta
         let data = JSON.parse(localStorage.getItem('luigiaFerieData'));
-        
-        if (!data) {
+
+        // Se i dati non esistono o la base è ancora vecchia, inizializziamo a 10
+        if (!data || data.baseFerie === 24) {
             data = {
-                baseFerie: 24, // Ferie di partenza
-                // Se la pagina viene aperta per la prima volta dopo o il 5 del mese, impostiamo l'ultimo incremento a questo mese per non fargli aggiungere subito +2 ingiustamente
+                baseFerie: 10, 
                 lastIncrementMonth: now.getDate() >= 5 ? currentMonth : currentMonth - 1,
                 lastIncrementYear: currentYear,
-                daysStatus: {} // Oggetto per salvare i giorni: "YYYY-MM-DD" : "requested" o "approved"
+                daysStatus: data ? data.daysStatus : {} // Mantieni i giorni segnati se presenti
             };
+            localStorage.setItem('luigiaFerieData', JSON.stringify(data));
         }
 
-        // Funzione per calcolare se dobbiamo aggiungere +2 ferie
         function checkMonthlyIncrements() {
-            let limit = 0; // Prevenzione loop infinito
+            let limit = 0;
             while (limit < 100) {
                 let nextMonth = data.lastIncrementMonth + 1;
                 let nextYear = data.lastIncrementYear;
@@ -310,11 +286,7 @@
                     nextMonth = 0;
                     nextYear++;
                 }
-
-                // Data in cui dovrebbe scattare il prossimo incremento (il 5 del mese successivo)
                 let targetDate = new Date(nextYear, nextMonth, 5);
-                
-                // Se la data attuale ha superato o uguagliato la data di target, aggiungiamo +2
                 if (now.getTime() >= targetDate.getTime()) {
                     data.baseFerie += 2;
                     data.lastIncrementMonth = nextMonth;
@@ -332,22 +304,16 @@
         }
 
         function updateFerieDisplay() {
-            // Contiamo quanti giorni nel calendario sono segnati come "approved"
             let approvedCount = Object.values(data.daysStatus).filter(status => status === 'approved').length;
-            
-            // Le ferie disponibili sono le base accumulate meno quelle approvate
             let ferieDisponibili = data.baseFerie - approvedCount;
             document.getElementById('ferie-disponibili').innerText = ferieDisponibili;
         }
 
-        // -- 2. GENERAZIONE E GESTIONE CALENDARIO --
         const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 
         function renderCalendar(month, year) {
             const calendarGrid = document.getElementById('calendar');
-            calendarGrid.innerHTML = ''; // Svuota griglia
-
-            // Intestazione giorni della settimana
+            calendarGrid.innerHTML = '';
             const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
             daysOfWeek.forEach(day => {
                 const div = document.createElement('div');
@@ -358,35 +324,24 @@
 
             document.getElementById('month-year-display').innerText = `${monthNames[month]} ${year}`;
 
-            // Trova il primo giorno del mese (0 = Domenica, noi vogliamo 0 = Lunedì)
             let firstDay = new Date(year, month, 1).getDay() - 1;
             if (firstDay === -1) firstDay = 6;
-
             let daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Aggiungi le celle vuote prima dell'inizio del mese
             for (let i = 0; i < firstDay; i++) {
                 const emptyDiv = document.createElement('div');
                 emptyDiv.classList.add('day', 'empty');
                 calendarGrid.appendChild(emptyDiv);
             }
 
-            // Popola i giorni del mese
             for (let i = 1; i <= daysInMonth; i++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.classList.add('day');
                 dayDiv.innerText = i;
-
-                // Formatta la data come YYYY-MM-DD
                 let dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                
-                // Controlla lo stato salvato per applicare il colore
                 let status = data.daysStatus[dateStr];
-                if (status) {
-                    dayDiv.classList.add(status);
-                }
+                if (status) dayDiv.classList.add(status);
 
-                // Logica del Click: Normale -> Richiesto -> Approvato -> Normale
                 dayDiv.onclick = function() {
                     let currentStatus = data.daysStatus[dateStr];
                     if (!currentStatus) {
@@ -396,33 +351,24 @@
                     } else if (currentStatus === 'approved') {
                         delete data.daysStatus[dateStr];
                     }
-                    
                     saveData();
-                    renderCalendar(displayMonth, displayYear); // Ricarica i colori
-                    updateFerieDisplay(); // Aggiorna il conto delle ferie in tempo reale
+                    renderCalendar(displayMonth, displayYear);
+                    updateFerieDisplay();
                 };
-
                 calendarGrid.appendChild(dayDiv);
             }
         }
 
         function changeMonth(direction) {
             displayMonth += direction;
-            if (displayMonth < 0) {
-                displayMonth = 11;
-                displayYear--;
-            } else if (displayMonth > 11) {
-                displayMonth = 0;
-                displayYear++;
-            }
+            if (displayMonth < 0) { displayMonth = 11; displayYear--; }
+            else if (displayMonth > 11) { displayMonth = 0; displayYear++; }
             renderCalendar(displayMonth, displayYear);
         }
 
-        // -- INIZIALIZZAZIONE --
-        checkMonthlyIncrements(); // Controlla se sono passati dei mesi dal 5
-        renderCalendar(displayMonth, displayYear); // Disegna il calendario del mese attuale
-        updateFerieDisplay(); // Calcola e stampa i numeri aggiornati nello specchietto
-
+        checkMonthlyIncrements();
+        renderCalendar(displayMonth, displayYear);
+        updateFerieDisplay();
     </script>
 </body>
 </html>
