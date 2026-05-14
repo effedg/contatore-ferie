@@ -16,7 +16,7 @@
             --summer-color: #8b5cf6;
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { margin: 0; background-color: var(--bg-color); color: var(--text-main); }
 
         nav { background-color: var(--nav-bg); padding: 15px 30px; display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -26,22 +26,15 @@
 
         .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         .widgets { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
-        .card { background-color: var(--card-bg); padding: 20px; border-radius: 12px; flex: 1; min-width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); text-align: center; cursor: pointer; }
+        .card { background-color: var(--card-bg); padding: 20px; border-radius: 12px; flex: 1; min-width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); text-align: center; }
         .card h2 { margin-top: 0; font-size: 1.1rem; color: #9d174d; }
         .card .number { font-size: 3rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
+        .card .subtitle { font-size: 0.75rem; color: #666; }
 
-        /* Interruttore Modalità */
         .mode-selector {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 2px solid var(--nav-bg);
+            background: white; padding: 15px; border-radius: 12px; margin-bottom: 20px;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 2px solid var(--nav-bg);
         }
 
         .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
@@ -51,22 +44,22 @@
         input:checked + .slider { background-color: var(--summer-color); }
         input:checked + .slider:before { transform: translateX(26px); }
 
-        .mode-label { font-weight: bold; font-size: 1rem; }
+        .mode-label { font-weight: bold; font-size: 0.9rem; }
         .label-summer { color: var(--summer-color); }
         .label-normal { color: var(--primary); }
 
         .calendar-section { background-color: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .calendar-header button { background-color: var(--nav-bg); border: none; color: var(--text-main); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .day-name { text-align: center; font-weight: bold; padding: 10px 0; color: var(--primary); }
-        .day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; background-color: #fdf8fa; border: 1px solid #fce7f3; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
+        .day-name { text-align: center; font-weight: bold; padding: 10px 0; color: var(--primary); font-size: 0.8rem; }
+        .day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; background-color: #fdf8fa; border: 1px solid #fce7f3; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
         
         .day.approved-normal { background-color: var(--approved); border: 2px solid var(--primary); color: #166534; font-weight: bold; }
         .day.approved-summer { background-color: #e0e7ff; border: 2px solid var(--summer-color); color: #4338ca; font-weight: bold; }
-        .day.requested { background-color: var(--requested); }
 
-        .legend { margin-top: 20px; display: flex; gap: 20px; justify-content: center; font-size: 0.9rem; flex-wrap: wrap; }
+        .legend { margin-top: 20px; display: flex; gap: 20px; justify-content: center; font-size: 0.85rem; flex-wrap: wrap; }
         .legend-item { display: flex; align-items: center; gap: 8px; }
         .legend-color { width: 15px; height: 15px; border-radius: 3px; border: 1px solid #ccc; }
     </style>
@@ -75,24 +68,25 @@
 
     <nav>
         <div class="profile-container">
-            <div class="profile-pic"><img src="luigia-m.jpg" alt="Foto"></div>
+            <div class="profile-pic"><img src="luigia-m.jpg" alt="Luigia"></div>
             <h1>OSS LUIGIA MATTEI</h1>
         </div>
     </nav>
 
     <div class="container">
         <div class="widgets">
-            <div class="card" onclick="setMode(false)">
+            <div class="card">
                 <h2>Ferie Disponibili</h2>
-                <div class="number" id="ferie-disponibili">0</div>
+                <div class="number" id="ferie-disponibili">--</div>
+                <div class="subtitle">+2gg ogni 5 del mese</div>
             </div>
-            <div class="card" style="border-top-color: var(--summer-color);" onclick="goToSummer()">
+            <div class="card" style="border-top-color: var(--summer-color);">
                 <h2 style="color: var(--summer-color);">Ferie Estive</h2>
                 <div class="number" style="color: var(--summer-color);" id="ferie-estive">14</div>
+                <div class="subtitle">Quota fissa annuale</div>
             </div>
         </div>
 
-        <!-- Selettore di Modalità -->
         <div class="mode-selector">
             <span class="mode-label label-normal">Usa Ferie Normali</span>
             <label class="switch">
@@ -108,10 +102,10 @@
                 <h2 id="month-year-display"></h2>
                 <button onclick="changeMonth(1)">&#8594;</button>
             </div>
-            <div class="calendar-grid" id="calendar"></div>
+            <div id="calendar" class="calendar-grid"></div>
             <div class="legend">
-                <div class="legend-item"><div class="legend-color" style="background-color: var(--approved); border: 2px solid var(--primary);"></div> Normale</div>
-                <div class="legend-item"><div class="legend-color" style="background-color: #e0e7ff; border: 2px solid var(--summer-color);"></div> Estiva (14gg)</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: var(--approved); border: 2px solid var(--primary);"></div> Normali</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #e0e7ff; border: 2px solid var(--summer-color);"></div> Estive</div>
             </div>
         </div>
     </div>
@@ -120,36 +114,61 @@
         let now = new Date();
         let displayMonth = now.getMonth();
         let displayYear = now.getFullYear();
-        let data = JSON.parse(localStorage.getItem('luigiaFerieData')) || { 
-            baseFerie: 10, baseEstive: 14, daysStatus: {}, lastIncrementMonth: now.getMonth(), lastIncrementYear: now.getFullYear() 
-        };
 
-        function goToSummer() {
-            displayMonth = 5; 
-            document.getElementById('modeSwitch').checked = true;
-            renderCalendar(displayMonth, displayYear);
+        // Inizializzazione dati
+        let data = JSON.parse(localStorage.getItem('luigiaFerieData'));
+        
+        if (!data) {
+            data = {
+                baseFerie: 10,
+                baseEstive: 14,
+                daysStatus: {},
+                lastIncrementMonth: now.getDate() >= 5 ? now.getMonth() : now.getMonth() - 1,
+                lastIncrementYear: now.getFullYear()
+            };
         }
 
-        function setMode(isSummer) {
-            document.getElementById('modeSwitch').checked = isSummer;
+        // Funzione Incremento: controlla se è passato il 5 del mese
+        function checkMonthlyIncrements() {
+            let today = new Date();
+            let limit = 0;
+            while (limit < 100) {
+                let nextMonth = data.lastIncrementMonth + 1;
+                let nextYear = data.lastIncrementYear;
+                if (nextMonth > 11) { nextMonth = 0; nextYear++; }
+                
+                // Giorno del controllo: il 5 del mese successivo all'ultimo incremento
+                let targetDate = new Date(nextYear, nextMonth, 5);
+                
+                if (today.getTime() >= targetDate.getTime()) {
+                    data.baseFerie += 2;
+                    data.lastIncrementMonth = nextMonth;
+                    data.lastIncrementYear = nextYear;
+                } else {
+                    break;
+                }
+                limit++;
+            }
+            saveData();
         }
 
         function saveData() { localStorage.setItem('luigiaFerieData', JSON.stringify(data)); }
 
         function updateFerieDisplay() {
-            let norm = 0, summ = 0;
+            let normUsed = 0, summUsed = 0;
             for (let d in data.daysStatus) {
-                if (data.daysStatus[d] === 'approved-normal') norm++;
-                if (data.daysStatus[d] === 'approved-summer') summ++;
+                if (data.daysStatus[d] === 'approved-normal') normUsed++;
+                if (data.daysStatus[d] === 'approved-summer') summUsed++;
             }
-            document.getElementById('ferie-disponibili').innerText = data.baseFerie - norm;
-            document.getElementById('ferie-estive').innerText = data.baseEstive - summ;
+            document.getElementById('ferie-disponibili').innerText = data.baseFerie - normUsed;
+            document.getElementById('ferie-estive').innerText = data.baseEstive - summUsed;
         }
 
         function renderCalendar(month, year) {
             const grid = document.getElementById('calendar');
             grid.innerHTML = '';
-            document.getElementById('month-year-display').innerText = `${["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"][month]} ${year}`;
+            const months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            document.getElementById('month-year-display').innerText = `${months[month]} ${year}`;
 
             ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'].forEach(d => {
                 const div = document.createElement('div'); div.className = 'day-name'; div.innerText = d; grid.appendChild(div);
@@ -166,6 +185,7 @@
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'day ' + (data.daysStatus[dateStr] || '');
                 dayDiv.innerText = i;
+                
                 dayDiv.onclick = () => {
                     let isSummerMode = document.getElementById('modeSwitch').checked;
                     if (!data.daysStatus[dateStr]) {
@@ -186,6 +206,7 @@
             renderCalendar(displayMonth, displayYear);
         }
 
+        checkMonthlyIncrements();
         renderCalendar(displayMonth, displayYear);
         updateFerieDisplay();
     </script>
