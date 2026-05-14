@@ -6,367 +6,186 @@
     <title>Dashboard Ferie - OSS Luigia Mattei</title>
     <style>
         :root {
-            --bg-color: #fdf2f8; /* Rosa chiarissimo */
-            --nav-bg: #fbcfe8; /* Rosa pastello */
-            --primary: #db2777; /* Rosa scuro / Fucsia */
-            --text-main: #831843; /* Borgogna */
+            --bg-color: #fdf2f8;
+            --nav-bg: #fbcfe8;
+            --primary: #db2777;
+            --text-main: #831843;
             --card-bg: #ffffff;
-            --requested: #fef08a; /* Giallo pastello */
-            --approved: #bbf7d0; /* Verde pastello */
+            --requested: #fef08a;
+            --approved: #bbf7d0;
+            --summer-color: #8b5cf6;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; background-color: var(--bg-color); color: var(--text-main); }
 
-        body {
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
+        nav { background-color: var(--nav-bg); padding: 15px 30px; display: flex; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .profile-container { display: flex; align-items: center; gap: 20px; }
+        .profile-pic { width: 60px; height: 60px; border-radius: 50%; background-color: white; border: 3px solid var(--primary); overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Navbar */
-        nav {
-            background-color: var(--nav-bg);
-            padding: 15px 30px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .widgets { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .card { background-color: var(--card-bg); padding: 20px; border-radius: 12px; flex: 1; min-width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); text-align: center; cursor: pointer; }
+        .card h2 { margin-top: 0; font-size: 1.1rem; color: #9d174d; }
+        .card .number { font-size: 3rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
 
-        .profile-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .profile-pic {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: white;
-            border: 3px solid var(--primary);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .profile-pic img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        nav h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--text-main);
-            letter-spacing: 1px;
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        /* Widgets */
-        .widgets {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            padding: 20px;
+        /* Interruttore Modalità */
+        .mode-selector {
+            background: white;
+            padding: 15px;
             border-radius: 12px;
-            flex: 1;
-            min-width: 250px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--primary);
-            text-align: center;
-        }
-
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.1rem;
-            color: #9d174d;
-        }
-
-        .card .number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-
-        .card .subtitle {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        /* Calendar Section */
-        .calendar-section {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 20px;
-        }
-
-        .calendar-header button {
-            background-color: var(--nav-bg);
-            border: none;
-            color: var(--text-main);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .calendar-header button:hover {
-            background-color: #f9a8d4;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-
-        .day-name {
-            text-align: center;
-            font-weight: bold;
-            padding: 10px 0;
-            color: var(--primary);
-        }
-
-        .day {
-            aspect-ratio: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #fdf8fa;
-            border: 1px solid #fce7f3;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-            user-select: none;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 2px solid var(--nav-bg);
         }
 
-        .day:hover:not(.empty) {
-            transform: scale(1.05);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--summer-color); }
+        input:checked + .slider:before { transform: translateX(26px); }
 
-        .day.empty {
-            background-color: transparent;
-            border: none;
-            cursor: default;
-        }
+        .mode-label { font-weight: bold; font-size: 1rem; }
+        .label-summer { color: var(--summer-color); }
+        .label-normal { color: var(--primary); }
 
-        .day.requested {
-            background-color: var(--requested);
-            border-color: #eab308;
-            color: #854d0e;
-            font-weight: bold;
-        }
+        .calendar-section { background-color: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-header button { background-color: var(--nav-bg); border: none; color: var(--text-main); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .day-name { text-align: center; font-weight: bold; padding: 10px 0; color: var(--primary); }
+        .day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; background-color: #fdf8fa; border: 1px solid #fce7f3; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
+        
+        .day.approved-normal { background-color: var(--approved); border: 2px solid var(--primary); color: #166534; font-weight: bold; }
+        .day.approved-summer { background-color: #e0e7ff; border: 2px solid var(--summer-color); color: #4338ca; font-weight: bold; }
+        .day.requested { background-color: var(--requested); }
 
-        .day.approved {
-            background-color: var(--approved);
-            border-color: #22c55e;
-            color: #166534;
-            font-weight: bold;
-        }
-
-        .legend {
-            margin-top: 20px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            font-size: 0.9rem;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-            border: 1px solid #ccc;
-        }
+        .legend { margin-top: 20px; display: flex; gap: 20px; justify-content: center; font-size: 0.9rem; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-color { width: 15px; height: 15px; border-radius: 3px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="profile-container">
-            <div class="profile-pic">
-                <img src="luigia-m.jpg" alt="Foto Luigia Mattei">
-            </div>
+            <div class="profile-pic"><img src="luigia-m.jpg" alt="Foto"></div>
             <h1>OSS LUIGIA MATTEI</h1>
         </div>
     </nav>
 
     <div class="container">
         <div class="widgets">
-            <div class="card">
+            <div class="card" onclick="setMode(false)">
                 <h2>Ferie Disponibili</h2>
-                <div class="number" id="ferie-disponibili">10</div>
-               
+                <div class="number" id="ferie-disponibili">0</div>
             </div>
+            <div class="card" style="border-top-color: var(--summer-color);" onclick="goToSummer()">
+                <h2 style="color: var(--summer-color);">Ferie Estive</h2>
+                <div class="number" style="color: var(--summer-color);" id="ferie-estive">14</div>
+            </div>
+        </div>
 
-            <div class="card" style="border-top-color: #8b5cf6;">
-                <h2 style="color: #5b21b6;">Ferie Estive</h2>
-                <div class="number" style="color: #8b5cf6;">14</div>
-                <div class="subtitle">Giorni fissi dedicati al periodo estivo.</div>
-            </div>
+        <!-- Selettore di Modalità -->
+        <div class="mode-selector">
+            <span class="mode-label label-normal">Usa Ferie Normali</span>
+            <label class="switch">
+                <input type="checkbox" id="modeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span class="mode-label label-summer">Usa Ferie Estive</span>
         </div>
 
         <div class="calendar-section">
             <div class="calendar-header">
-                <button onclick="changeMonth(-1)">&#8592; Mese Prec</button>
+                <button onclick="changeMonth(-1)">&#8592;</button>
                 <h2 id="month-year-display"></h2>
-                <button onclick="changeMonth(1)">Mese Succ &#8594;</button>
+                <button onclick="changeMonth(1)">&#8594;</button>
             </div>
-
             <div class="calendar-grid" id="calendar"></div>
-
             <div class="legend">
-                <div class="legend-item"><div class="legend-color" style="background-color: #fdf8fa;"></div> Libero</div>
-                <div class="legend-item"><div class="legend-color" style="background-color: var(--requested); border-color: #eab308;"></div> Richiesto</div>
-                <div class="legend-item"><div class="legend-color" style="background-color: var(--approved); border-color: #22c55e;"></div> Approvato</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: var(--approved); border: 2px solid var(--primary);"></div> Normale</div>
+                <div class="legend-item"><div class="legend-color" style="background-color: #e0e7ff; border: 2px solid var(--summer-color);"></div> Estiva (14gg)</div>
             </div>
         </div>
     </div>
 
     <script>
         let now = new Date();
-        let currentMonth = now.getMonth();
-        let currentYear = now.getFullYear();
-        let displayMonth = currentMonth;
-        let displayYear = currentYear;
+        let displayMonth = now.getMonth();
+        let displayYear = now.getFullYear();
+        let data = JSON.parse(localStorage.getItem('luigiaFerieData')) || { 
+            baseFerie: 10, baseEstive: 14, daysStatus: {}, lastIncrementMonth: now.getMonth(), lastIncrementYear: now.getFullYear() 
+        };
 
-        let data = JSON.parse(localStorage.getItem('luigiaFerieData'));
-
-        // Se i dati non esistono o la base è ancora vecchia, inizializziamo a 10
-        if (!data || data.baseFerie === 24) {
-            data = {
-                baseFerie: 10, 
-                lastIncrementMonth: now.getDate() >= 5 ? currentMonth : currentMonth - 1,
-                lastIncrementYear: currentYear,
-                daysStatus: data ? data.daysStatus : {} // Mantieni i giorni segnati se presenti
-            };
-            localStorage.setItem('luigiaFerieData', JSON.stringify(data));
+        function goToSummer() {
+            displayMonth = 5; 
+            document.getElementById('modeSwitch').checked = true;
+            renderCalendar(displayMonth, displayYear);
         }
 
-        function checkMonthlyIncrements() {
-            let limit = 0;
-            while (limit < 100) {
-                let nextMonth = data.lastIncrementMonth + 1;
-                let nextYear = data.lastIncrementYear;
-                if (nextMonth > 11) {
-                    nextMonth = 0;
-                    nextYear++;
-                }
-                let targetDate = new Date(nextYear, nextMonth, 5);
-                if (now.getTime() >= targetDate.getTime()) {
-                    data.baseFerie += 2;
-                    data.lastIncrementMonth = nextMonth;
-                    data.lastIncrementYear = nextYear;
-                } else {
-                    break;
-                }
-                limit++;
-            }
-            saveData();
+        function setMode(isSummer) {
+            document.getElementById('modeSwitch').checked = isSummer;
         }
 
-        function saveData() {
-            localStorage.setItem('luigiaFerieData', JSON.stringify(data));
-        }
+        function saveData() { localStorage.setItem('luigiaFerieData', JSON.stringify(data)); }
 
         function updateFerieDisplay() {
-            let approvedCount = Object.values(data.daysStatus).filter(status => status === 'approved').length;
-            let ferieDisponibili = data.baseFerie - approvedCount;
-            document.getElementById('ferie-disponibili').innerText = ferieDisponibili;
+            let norm = 0, summ = 0;
+            for (let d in data.daysStatus) {
+                if (data.daysStatus[d] === 'approved-normal') norm++;
+                if (data.daysStatus[d] === 'approved-summer') summ++;
+            }
+            document.getElementById('ferie-disponibili').innerText = data.baseFerie - norm;
+            document.getElementById('ferie-estive').innerText = data.baseEstive - summ;
         }
 
-        const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-
         function renderCalendar(month, year) {
-            const calendarGrid = document.getElementById('calendar');
-            calendarGrid.innerHTML = '';
-            const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-            daysOfWeek.forEach(day => {
-                const div = document.createElement('div');
-                div.classList.add('day-name');
-                div.innerText = day;
-                calendarGrid.appendChild(div);
-            });
+            const grid = document.getElementById('calendar');
+            grid.innerHTML = '';
+            document.getElementById('month-year-display').innerText = `${["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"][month]} ${year}`;
 
-            document.getElementById('month-year-display').innerText = `${monthNames[month]} ${year}`;
+            ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'].forEach(d => {
+                const div = document.createElement('div'); div.className = 'day-name'; div.innerText = d; grid.appendChild(div);
+            });
 
             let firstDay = new Date(year, month, 1).getDay() - 1;
             if (firstDay === -1) firstDay = 6;
             let daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            for (let i = 0; i < firstDay; i++) {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.classList.add('day', 'empty');
-                calendarGrid.appendChild(emptyDiv);
-            }
+            for (let i = 0; i < firstDay; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
 
             for (let i = 1; i <= daysInMonth; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day');
-                dayDiv.innerText = i;
                 let dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                let status = data.daysStatus[dateStr];
-                if (status) dayDiv.classList.add(status);
-
-                dayDiv.onclick = function() {
-                    let currentStatus = data.daysStatus[dateStr];
-                    if (!currentStatus) {
-                        data.daysStatus[dateStr] = 'requested';
-                    } else if (currentStatus === 'requested') {
-                        data.daysStatus[dateStr] = 'approved';
-                    } else if (currentStatus === 'approved') {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day ' + (data.daysStatus[dateStr] || '');
+                dayDiv.innerText = i;
+                dayDiv.onclick = () => {
+                    let isSummerMode = document.getElementById('modeSwitch').checked;
+                    if (!data.daysStatus[dateStr]) {
+                        data.daysStatus[dateStr] = isSummerMode ? 'approved-summer' : 'approved-normal';
+                    } else {
                         delete data.daysStatus[dateStr];
                     }
-                    saveData();
-                    renderCalendar(displayMonth, displayYear);
-                    updateFerieDisplay();
+                    saveData(); updateFerieDisplay(); renderCalendar(displayMonth, displayYear);
                 };
-                calendarGrid.appendChild(dayDiv);
+                grid.appendChild(dayDiv);
             }
         }
 
-        function changeMonth(direction) {
-            displayMonth += direction;
+        function changeMonth(dir) {
+            displayMonth += dir;
             if (displayMonth < 0) { displayMonth = 11; displayYear--; }
             else if (displayMonth > 11) { displayMonth = 0; displayYear++; }
             renderCalendar(displayMonth, displayYear);
         }
 
-        checkMonthlyIncrements();
         renderCalendar(displayMonth, displayYear);
         updateFerieDisplay();
     </script>
