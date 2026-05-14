@@ -77,12 +77,12 @@
         <div class="widgets">
             <div class="card">
                 <h2>Ferie Disponibili</h2>
-                <div class="number" id="ferie-disponibili">10</div>
+                <div class="number" id="ferie-disponibili">--</div>
                 <div class="subtitle">+2gg ogni 5 del mese</div>
             </div>
             <div class="card" style="border-top-color: var(--summer-color);">
                 <h2 style="color: var(--summer-color);">Ferie Estive</h2>
-                <div class="number" style="color: var(--summer-color);" id="ferie-estive">14</div>
+                <div class="number" style="color: var(--summer-color);" id="ferie-estive">--</div>
                 <div class="subtitle">Quota fissa annuale</div>
             </div>
         </div>
@@ -115,19 +115,19 @@
         let displayMonth = now.getMonth();
         let displayYear = now.getFullYear();
 
-        // Recupero dati esistenti
+        // --- INIZIALIZZAZIONE E CORREZIONE DATI ---
         let data = JSON.parse(localStorage.getItem('luigiaFerieData'));
-        
-        // CORREZIONE FORZATA: Se i dati non esistono o se la base è ancora il vecchio 24
-        if (!data || data.baseFerie === 24) {
+
+        // Se mancano i dati o mancano le nuove proprietà (per prevenire il NaN su mobile)
+        if (!data || data.baseEstive === undefined || data.baseFerie === undefined) {
             data = {
-                baseFerie: 10, // Impostiamo a 10 come richiesto
-                baseEstive: 14, // Impostiamo a 14 come richiesto
-                daysStatus: data ? data.daysStatus : {}, // Mantieni i giorni già segnati se esistono
-                lastIncrementMonth: now.getDate() >= 5 ? now.getMonth() : now.getMonth() - 1,
-                lastIncrementYear: now.getFullYear()
+                baseFerie: (data && data.baseFerie) ? data.baseFerie : 10,
+                baseEstive: 14, 
+                daysStatus: (data && data.daysStatus) ? data.daysStatus : {},
+                lastIncrementMonth: (data && data.lastIncrementMonth !== undefined) ? data.lastIncrementMonth : (now.getDate() >= 5 ? now.getMonth() : now.getMonth() - 1),
+                lastIncrementYear: (data && data.lastIncrementYear) ? data.lastIncrementYear : now.getFullYear()
             };
-            localStorage.setItem('luigiaFerieData', JSON.stringify(data));
+            saveData();
         }
 
         function checkMonthlyIncrements() {
